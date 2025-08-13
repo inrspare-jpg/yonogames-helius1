@@ -65,7 +65,6 @@
             filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
         }
         
-        /* Logo Animation Effects */
         .logo:hover img {
             transform: rotate(15deg) scale(1.1);
             filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3)) brightness(1.1);
@@ -134,7 +133,6 @@
             text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
         }
         
-        /* Hero Button Effects */
         .hero-btn {
             position: relative;
             overflow: hidden;
@@ -247,27 +245,37 @@
             color: var(--dark);
         }
         
-        /* Games Carousel Section */
+        /* Games Carousel Section - 完全重构 */
         .games {
             padding: 80px 0;
             background-color: var(--light);
         }
         
-        .games-carousel {
-            position: relative;
-            overflow: hidden;
+        .games-carousel-container {
             width: 100%;
-            padding: 0 50px; /* Add padding to prevent buttons from overlapping */
+            overflow: hidden;
+            position: relative;
         }
-
-        .carousel-track {
+        
+        .games-carousel {
             display: flex;
-            will-change: transform; /* 优化性能 */
+            transition: transform 0.5s ease;
+            padding: 0 15px;
         }
-
+        
         .game-card {
-            flex-shrink: 0; /* 防止卡片被压缩 */
-            margin-right: 25px; /* 确保间距一致 */
+            flex: 0 0 auto;
+            width: 280px;
+            margin-right: 20px;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .game-card:last-child {
+            margin-right: 0;
         }
         
         .game-card:hover {
@@ -279,18 +287,10 @@
             height: 180px;
             background-size: cover;
             background-position: center;
-            transition: all 0.3s ease;
-        }
-        
-        .game-card:hover .game-img {
-            transform: scale(1.05);
         }
         
         .game-info {
             padding: 20px;
-            position: relative;
-            z-index: 1;
-            background: white;
         }
         
         .game-info h3 {
@@ -298,53 +298,66 @@
             color: var(--primary);
         }
         
-        .game-card:after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 5px;
-            background: var(--primary);
-            transition: all 0.3s ease;
+        /* 手机适配 */
+        @media (max-width: 768px) {
+            .game-card {
+                width: 75vw;
+                margin-right: 15px;
+            }
+            
+            .hero {
+                padding: 80px 0;
+                min-height: 60vh;
+            }
+            
+            .hero h1 {
+                font-size: 36px;
+            }
+            
+            .hero p {
+                font-size: 18px;
+            }
+            
+            .section-title {
+                font-size: 30px;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .logo {
+                font-size: 24px;
+            }
+            
+            .logo img {
+                height: 30px;
+            }
         }
         
-        .game-card:hover:after {
-            height: 8px;
-            background: var(--accent);
-        }
-        
-        .carousel-controls {
-            position: absolute;
-            top: 50%;
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            transform: translateY(-50%);
-            z-index: 10;
-            pointer-events: none;
-        }
-        
-        .carousel-btn {
-            width: 50px;
-            height: 40px;
-            background: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            cursor: pointer;
-            border: none;
-            color: var(--primary);
-            font-size: 20px;
-            transition: all 0.3s ease;
-            pointer-events: all;
-        }
-        
-        .carousel-btn:hover {
-            background: var(--primary);
-            color: white;
+        @media (max-width: 768px) {
+            .games-carousel {
+                padding: 0 10px;
+            }
+    
+            .game-card {
+                width: 85vw;
+                margin-right: 10px;
+                flex: 0 0 auto;
+                scroll-snap-align: start;
+            }
+    
+            .games-carousel-container {
+                overflow-x: auto;
+                scroll-snap-type: x mandatory;
+                -webkit-overflow-scrolling: touch;
+            }
+    
+            /* 隐藏原生滚动条 */
+            .games-carousel-container::-webkit-scrollbar {
+                display: none;
+            }
         }
         
         /* Bonuses Section */
@@ -462,45 +475,6 @@
             padding: 15px 40px;
         }
         
-        /* Responsive */
-        @media (max-width: 768px) {
-            .hero {
-                padding: 80px 0;
-                min-height: 60vh;
-            }
-            
-            .hero h1 {
-                font-size: 36px;
-            }
-            
-            .hero p {
-                font-size: 18px;
-            }
-            
-            .section-title {
-                font-size: 30px;
-            }
-            
-            .header-content {
-                flex-direction: column;
-                gap: 15px;
-            }
-            
-            .logo {
-                font-size: 24px;
-            }
-            
-            .logo img {
-                height: 30px;
-            }
-            
-            .carousel-btn {
-                width: 35px;
-                height: 35px;
-                font-size: 16px;
-            }
-        }
-        
         /* Animation */
         @keyframes float {
             0% { transform: translateY(0px); }
@@ -566,8 +540,8 @@
     <section class="games">
         <div class="container">
             <h2 class="section-title">🎮 Our Popular Games</h2>
-            <div class="games-carousel">
-                <div class="carousel-track" id="carouselTrack">
+            <div class="games-carousel-container">
+                <div class="games-carousel" id="carouselTrack">
                     <div class="game-card">
                         <div class="game-img" style="background-image: url('https://images.unsplash.com/photo-1585856068721-5b0baeb7d7b0?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');"></div>
                         <div class="game-info">
@@ -658,78 +632,128 @@
         </div>
     </section>
     
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2>Ready to Start Winning?</h2>
+            <p>Join thousands of players enjoying our games and earning real rewards every day.</p>
+            <a href="https://d35xoc2ezi3ki5.cloudfront.net/safe_yonogames.apk" class="cta-button hero-btn">Download Now</a>
+        </div>
+    </section>
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const track = document.getElementById('carouselTrack');
-        const slides = document.querySelectorAll('.game-card');
-        const prevBtn = document.querySelector('.prev-btn');
-        const nextBtn = document.querySelector('.next-btn');
+        const slides = Array.from(document.querySelectorAll('.game-card'));
         
-        // 克隆第一个和最后一个slide实现无缝循环
-        const firstClone = slides[0].cloneNode(true);
-        const lastClone = slides[slides.length - 1].cloneNode(true);
+        // 计算卡片宽度和间距
+        function getCardWidth() {
+            const firstCard = slides[0];
+            const style = window.getComputedStyle(firstCard);
+            return firstCard.offsetWidth + parseInt(style.marginRight);
+        }
         
-        track.appendChild(firstClone);
-        track.insertBefore(lastClone, slides[0]);
+        // 克隆卡片实现无缝循环
+        const cardWidth = getCardWidth();
+        const containerWidth = track.parentElement.offsetWidth;
+        const visibleCards = Math.ceil(containerWidth / cardWidth);
+        
+        for (let i = 0; i < visibleCards; i++) {
+            track.appendChild(slides[i].cloneNode(true));
+        }
         
         const allSlides = document.querySelectorAll('.game-card');
-        const slideStyle = window.getComputedStyle(allSlides[0]);
-        const slideWidth = allSlides[0].offsetWidth + 
-                         parseInt(slideStyle.marginRight);
+        let currentIndex = 0;
+        let cardWidthCurrent = getCardWidth();
         
-        // 初始位置设置为第一个真实slide(索引1)
-        let currentIndex = 1;
-        track.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
-        track.style.transition = 'none';
-        
-        function goToSlide(index) {
-            track.style.transition = 'transform 0.5s ease';
-            track.style.transform = `translateX(-${index * slideWidth}px)`;
-            currentIndex = index;
+        function updateCarousel() {
+            // 确保在移动设备上完全滚动一张卡片
+            const scrollAmount = cardWidthCurrent;
+            track.style.transform = `translateX(-${currentIndex * scrollAmount}px)`;
         }
         
         function nextSlide() {
-            if (currentIndex >= allSlides.length - 2) {
-                goToSlide(currentIndex + 1);
-                // 当到达克隆slide时，无缝跳转到真实slide
-                setTimeout(() => {
-                    track.style.transition = 'none';
-                    goToSlide(1);
-                    // 强制重绘
-                    void track.offsetWidth;
-                }, 500);
+            // 计算实际可见卡片数量
+            const visibleCount = Math.floor(track.parentElement.offsetWidth / getCardWidth());
+            
+            currentIndex = (currentIndex + 1) % (allSlides.length - visibleCount + 1);
+            
+            // 如果到达末尾，无缝跳回开头
+            if (currentIndex >= allSlides.length - visibleCount) {
+                track.style.transition = 'none';
+                updateCarousel();
+                // 强制重绘
+                void track.offsetWidth;
+                currentIndex = 0;
+                track.style.transition = 'transform 0.5s ease';
+                updateCarousel();
             } else {
-                goToSlide(currentIndex + 1);
-            }
-        }
-        
-        function prevSlide() {
-            if (currentIndex <= 1) {
-                goToSlide(currentIndex - 1);
-                // 当到达克隆slide时，无缝跳转到真实slide
-                setTimeout(() => {
-                    track.style.transition = 'none';
-                    goToSlide(allSlides.length - 2);
-                    // 强制重绘
-                    void track.offsetWidth;
-                }, 500);
-            } else {
-                goToSlide(currentIndex - 1);
+                track.style.transition = 'transform 0.5s ease';
+                updateCarousel();
             }
         }
         
         // 自动播放
-        let autoplay = setInterval(nextSlide, 2000);
+        let autoplay = setInterval(nextSlide, 3000);
         
-        // 窗口大小改变时重新计算
-        window.addEventListener('resize', () => {
-            const newSlideWidth = allSlides[0].offsetWidth + 
-                               parseInt(slideStyle.marginRight);
+        // 响应式调整
+        function handleResize() {
+            cardWidthCurrent = getCardWidth();
+            currentIndex = 0;
             track.style.transition = 'none';
-            track.style.transform = `translateX(-${currentIndex * newSlideWidth}px)`;
+            updateCarousel();
+            clearInterval(autoplay);
+            autoplay = setInterval(nextSlide, 3000);
+        }
+        
+        // 添加防抖函数避免频繁触发
+        let resizeTimer;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(handleResize, 250);
         });
+        
+        // 触摸事件支持
+        let touchStartX = 0;
+        let touchEndX = 0;
+        
+        track.addEventListener('touchstart', function(e) {
+            touchStartX = e.changedTouches[0].screenX;
+            clearInterval(autoplay);
+        }, {passive: true});
+        
+        track.addEventListener('touchend', function(e) {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+            autoplay = setInterval(nextSlide, 3000);
+        }, {passive: true});
+        
+        function handleSwipe() {
+            const threshold = 60; // 最小滑动距离
+            if (touchStartX - touchEndX > threshold) {
+                nextSlide(); // 向左滑动，下一张
+            } else if (touchEndX - touchStartX > threshold) {
+                // 向右滑动，上一张 - 需要实现previousSlide函数
+                previousSlide();
+            }
+        }
+        
+        function previousSlide() {
+            const visibleCount = Math.floor(track.parentElement.offsetWidth / getCardWidth());
+            
+            currentIndex = (currentIndex - 1 + (allSlides.length - visibleCount + 1)) % (allSlides.length - visibleCount + 1);
+            
+            if (currentIndex < 0) {
+                currentIndex = allSlides.length - visibleCount;
+                track.style.transition = 'none';
+                updateCarousel();
+                void track.offsetWidth;
+                track.style.transition = 'transform 0.5s ease';
+            }
+            
+            updateCarousel();
+        }
     });
 </script>
 </body>
-
 </html>
