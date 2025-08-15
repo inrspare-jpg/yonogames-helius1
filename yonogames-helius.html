@@ -244,9 +244,11 @@
             color: var(--dark);
         }
         
+        /* Games Section with Smooth Carousel */
         .games {
             padding: 80px 0;
             background-color: var(--light);
+            overflow: hidden;
         }
         
         .games-carousel-container {
@@ -257,8 +259,10 @@
         
         .games-carousel {
             display: flex;
-            transition: transform 0.5s ease;
-            padding: 0 15px;
+            width: max-content;
+            animation: scroll 40s linear infinite;
+            will-change: transform;
+            padding: 10px 0;
         }
         
         .game-card {
@@ -269,11 +273,8 @@
             border-radius: 10px;
             overflow: hidden;
             box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            transition: all 0.3s ease;
-        }
-        
-        .game-card:last-child {
-            margin-right: 0;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            backface-visibility: hidden;
         }
         
         .game-card:hover {
@@ -296,64 +297,13 @@
             color: var(--primary);
         }
         
-        @media (max-width: 768px) {
-            .game-card {
-                width: 75vw;
-                margin-right: 15px;
-            }
-            
-            .hero {
-                padding: 80px 0;
-                min-height: 60vh;
-            }
-            
-            .hero h1 {
-                font-size: 36px;
-            }
-            
-            .hero p {
-                font-size: 18px;
-            }
-            
-            .section-title {
-                font-size: 30px;
-            }
-            
-            .header-content {
-                flex-direction: column;
-                gap: 15px;
-            }
-            
-            .logo {
-                font-size: 24px;
-            }
-            
-            .logo img {
-                height: 30px;
-            }
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
         }
         
-        @media (max-width: 768px) {
-            .games-carousel {
-                padding: 0 10px;
-            }
-    
-            .game-card {
-                width: 85vw;
-                margin-right: 10px;
-                flex: 0 0 auto;
-                scroll-snap-align: start;
-            }
-    
-            .games-carousel-container {
-                overflow-x: auto;
-                scroll-snap-type: x mandatory;
-                -webkit-overflow-scrolling: touch;
-            }
-    
-            .games-carousel-container::-webkit-scrollbar {
-                display: none;
-            }
+        .games-carousel-container:hover .games-carousel {
+            animation-play-state: paused;
         }
         
         /* Bonuses Section */
@@ -479,6 +429,52 @@
         .floating {
             animation: float 3s ease-in-out infinite;
         }
+        
+        @media (max-width: 768px) {
+            .hero {
+                padding: 80px 0;
+                min-height: 60vh;
+            }
+            
+            .hero h1 {
+                font-size: 36px;
+            }
+            
+            .hero p {
+                font-size: 18px;
+            }
+            
+            .section-title {
+                font-size: 30px;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .logo {
+                font-size: 24px;
+            }
+            
+            .logo img {
+                height: 30px;
+            }
+            
+            .game-card {
+                width: 85vw;
+                margin-right: 10px;
+            }
+            
+            .games-carousel {
+                animation: scrollMobile 40s linear infinite;
+            }
+            
+            @keyframes scrollMobile {
+                0% { transform: translateX(0); }
+                100% { transform: translateX(-100%); }
+            }
+        }
     </style>
 </head>
 <body>
@@ -532,6 +528,7 @@
             <h2 class="section-title">Our Popular Games</h2>
             <div class="games-carousel-container">
                 <div class="games-carousel" id="carouselTrack">
+                    <!-- 原始幻灯片 -->
                     <div class="game-card">
                         <div class="game-img" style="background-image: url('https://new.heliusnew.com/uploads/image/20250815/1755248295655078.jpg');"></div>
                         <div class="game-info">
@@ -588,6 +585,34 @@
                             <p>New game launching very soon</p>
                         </div>
                     </div>
+                    <div class="game-card">
+                        <div class="game-img" style="background-image: url('https://new.heliusnew.com/uploads/image/20250815/1755248295655078.jpg');"></div>
+                        <div class="game-info">
+                            <h3>Aviator</h3>
+                            <p>Cash out before the plane flies away</p>
+                        </div>
+                    </div>
+                    <div class="game-card">
+                        <div class="game-img" style="background-image: url('https://new.heliusnew.com/uploads/image/20250815/1755248373945065.jpg');"></div>
+                        <div class="game-info">
+                            <h3>Power of Kraken</h3>
+                            <p>Spin to win Kraken's deep-sea treasure</p>
+                        </div>
+                    </div>
+                    <div class="game-card">
+                        <div class="game-img" style="background-image: url('https://new.heliusnew.com/uploads/image/20250815/1755248429686798.jpg');"></div>
+                        <div class="game-info">
+                            <h3>Fortune Gems</h3>
+                            <p>Match gems to trigger big rewards</p>
+                        </div>
+                    </div>
+                    <div class="game-card">
+                        <div class="game-img" style="background-image: url('https://new.heliusnew.com/uploads/image/20250815/1755248468202915.jpg');"></div>
+                        <div class="game-info">
+                            <h3>Ganesha Gold</h3>
+                            <p>Blessings of Ganesha bring fortune</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -622,106 +647,43 @@
     </section>
 
 <script>
+    
     document.addEventListener('DOMContentLoaded', function() {
-        const track = document.getElementById('carouselTrack');
-        const slides = Array.from(document.querySelectorAll('.game-card'));
-        
-        function getCardWidth() {
-            const firstCard = slides[0];
-            const style = window.getComputedStyle(firstCard);
-            return firstCard.offsetWidth + parseInt(style.marginRight);
-        }
-        
-        const cardWidth = getCardWidth();
-        const containerWidth = track.parentElement.offsetWidth;
-        const visibleCards = Math.ceil(containerWidth / cardWidth);
-        
-        for (let i = 0; i < visibleCards; i++) {
-            track.appendChild(slides[i].cloneNode(true));
-        }
-        
-        const allSlides = document.querySelectorAll('.game-card');
-        let currentIndex = 0;
-        let cardWidthCurrent = getCardWidth();
-        
-        function updateCarousel() {
-            const scrollAmount = cardWidthCurrent;
-            track.style.transform = `translateX(-${currentIndex * scrollAmount}px)`;
-        }
-        
-        function nextSlide() {
-            const visibleCount = Math.floor(track.parentElement.offsetWidth / getCardWidth());
-            
-            currentIndex = (currentIndex + 1) % (allSlides.length - visibleCount + 1);
-            
-            if (currentIndex >= allSlides.length - visibleCount) {
-                track.style.transition = 'none';
-                updateCarousel();
-                void track.offsetWidth;
-                currentIndex = 0;
-                track.style.transition = 'transform 0.5s ease';
-                updateCarousel();
+        function handleResize() {
+            const carousel = document.querySelector('.games-carousel');
+            if (window.innerWidth <= 768) {
+                carousel.style.animationName = 'scrollMobile';
             } else {
-                track.style.transition = 'transform 0.5s ease';
-                updateCarousel();
+                carousel.style.animationName = 'scroll';
             }
         }
         
-        let autoplay = setInterval(nextSlide, 3000);
-        
-        function handleResize() {
-            cardWidthCurrent = getCardWidth();
-            currentIndex = 0;
-            track.style.transition = 'none';
-            updateCarousel();
-            clearInterval(autoplay);
-            autoplay = setInterval(nextSlide, 3000);
-        }
-        
-        let resizeTimer;
         window.addEventListener('resize', function() {
             clearTimeout(resizeTimer);
             resizeTimer = setTimeout(handleResize, 250);
         });
         
-        let touchStartX = 0;
-        let touchEndX = 0;
+        let resizeTimer;
+        handleResize(); 
         
-        track.addEventListener('touchstart', function(e) {
-            touchStartX = e.changedTouches[0].screenX;
-            clearInterval(autoplay);
+        const carouselContainer = document.querySelector('.games-carousel-container');
+        const carousel = document.querySelector('.games-carousel');
+        
+        carouselContainer.addEventListener('mouseenter', function() {
+            carousel.style.animationPlayState = 'paused';
+        });
+        
+        carouselContainer.addEventListener('mouseleave', function() {
+            carousel.style.animationPlayState = 'running';
+        });
+        
+        carouselContainer.addEventListener('touchstart', function() {
+            carousel.style.animationPlayState = 'paused';
         }, {passive: true});
         
-        track.addEventListener('touchend', function(e) {
-            touchEndX = e.changedTouches[0].screenX;
-            handleSwipe();
-            autoplay = setInterval(nextSlide, 3000);
+        carouselContainer.addEventListener('touchend', function() {
+            carousel.style.animationPlayState = 'running';
         }, {passive: true});
-        
-        function handleSwipe() {
-            const threshold = 60; 
-            if (touchStartX - touchEndX > threshold) {
-                nextSlide(); 
-            } else if (touchEndX - touchStartX > threshold) {
-                previousSlide();
-            }
-        }
-        
-        function previousSlide() {
-            const visibleCount = Math.floor(track.parentElement.offsetWidth / getCardWidth());
-            
-            currentIndex = (currentIndex - 1 + (allSlides.length - visibleCount + 1)) % (allSlides.length - visibleCount + 1);
-            
-            if (currentIndex < 0) {
-                currentIndex = allSlides.length - visibleCount;
-                track.style.transition = 'none';
-                updateCarousel();
-                void track.offsetWidth;
-                track.style.transition = 'transform 0.5s ease';
-            }
-            
-            updateCarousel();
-        }
     });
 </script>
 </body>
